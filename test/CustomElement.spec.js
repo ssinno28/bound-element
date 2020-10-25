@@ -89,4 +89,14 @@ describe('CustomElement', () => {
         expect(customElement.bindElements).toHaveBeenCalled();
         expect(customElement.bindEvents).toHaveBeenCalled();
     });
+
+    test('bindElements creates custom element instances', () => {
+        const customElement =
+            new CustomElement('my-custom-element', 'div', dom.window.document);
+
+        customElement.setInnerHtml(`<input element-name="text-input" type="text" />`);
+        customElement.bindElements();
+
+        expect(customElement.textInputEl).toBeTruthy();
+    });
 });
