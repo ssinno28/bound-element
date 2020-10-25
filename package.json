@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ssinno28/light-web-compontents.git"
+    "url": "git+https://github.com/ssinno28/light-web-components.git"
   },
   "keywords": [
     "web-components"
@@ -16,9 +16,9 @@
   "author": "Sammi Sinno",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ssinno28/light-web-compontents/issues"
+    "url": "https://github.com/ssinno28/light-web-components/issues"
   },
-  "homepage": "https://github.com/ssinno28/light-web-compontents#readme",
+  "homepage": "https://github.com/ssinno28/light-web-components#readme",
   "dependencies": {
     "lodash": "^4.17.20"
   },
