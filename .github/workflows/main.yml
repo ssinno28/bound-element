@@ -16,7 +16,8 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-        node-version: 10
+        node-version: 12
+        registry-url: https://registry.npmjs.org/
           
     - name: Restore
       run: npm install
@@ -27,5 +28,10 @@ jobs:
     - name: Install rollup
       run: npm install -g rollup
       
-    - name: Bundle and Publish
-      run: rollup ./base-web-component/main.js --file bundle.js --format iife && npm publish
+    - name: Bundle
+      run: rollup ./base-web-component/main.js --file bundle.js --format iife
+
+    - name: Publish
+      run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
