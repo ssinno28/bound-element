@@ -23,3 +23,9 @@ jobs:
       
     - name: Run Jest
       uses: stefanoeb/jest-action@1.0.3
+
+    - name: Install rollup
+      run: npm install -g rollup
+      
+    - name: Bundle and Publish
+      run: rollup ./base-web-component/main.js --file bundle.js --format iife && npm publish
