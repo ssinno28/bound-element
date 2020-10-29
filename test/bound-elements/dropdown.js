@@ -1,7 +1,7 @@
-import CustomElement from "../../base-web-component/custom-element/customElement"
+import BoundElement from "../../bound-element/main"
 import * as _ from "lodash";
 
-export default class Dropdown extends CustomElement {
+export default class Dropdown extends BoundElement {
     constructor(name, elementType, parent) {
         super(name, elementType, parent);
 

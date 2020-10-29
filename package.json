@@ -1,14 +1,14 @@
 {
-  "name": "light-web-components",
+  "name": "bound-element",
   "version": "1.0.0",
-  "description": "Lightweight abstraction from raw web components",
+  "description": "A library to bind elements to objects in memory",
   "main": "bundle.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ssinno28/light-web-components.git"
+    "url": "git+https://github.com/ssinno28/bound-element.git"
   },
   "keywords": [
     "web-components"
@@ -16,9 +16,9 @@
   "author": "Sammi Sinno",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ssinno28/light-web-components/issues"
+    "url": "https://github.com/ssinno28/bound-element/issues"
   },
-  "homepage": "https://github.com/ssinno28/light-web-components#readme",
+  "homepage": "https://github.com/ssinno28/bound-element#readme",
   "dependencies": {
     "lodash": "^4.17.20"
   },

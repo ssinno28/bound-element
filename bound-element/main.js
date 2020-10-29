@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import {eventsMixin} from "./mixins/events";
 
-export default class CustomElement {
+export default class BoundElement {
     get children() {
         return this._children;
     }
@@ -92,7 +92,7 @@ export default class CustomElement {
 
                 const customElement = !_.isUndefined(customElementType)
                     ? new customElementType(elementName, childElement, this)
-                    : new CustomElement(elementName, childElement, this);
+                    : new BoundElement(elementName, childElement, this);
 
                 this[_.camelCase(elementName) + 'El'] = customElement;
                 this.children.push(customElement);
@@ -208,7 +208,7 @@ export default class CustomElement {
             throw new Error(`element with name ${name} is already defined`);
         }
 
-        const childElement = new CustomElement(name, type, this);
+        const childElement = new BoundElement(name, type, this);
 
         if (prepend) {
             this.element.prepend(childElement.element);
@@ -289,4 +289,4 @@ export default class CustomElement {
     }
 }
 
-_.extend(CustomElement.prototype, eventsMixin);
+_.extend(BoundElement.prototype, eventsMixin);

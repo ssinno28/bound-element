@@ -1,13 +1,13 @@
-import DropdownElement from "./custom-elements/dropdown";
+import DropdownElement from "./bound-elements/dropdown";
 import {JSDOM} from "jsdom"
-import CustomElement from "../base-web-component/custom-element/customElement";
+import BoundElement from "../bound-element/main";
 
 const dom = new JSDOM()
 
-describe('CustomElement', () => {
+describe('Main', () => {
     let dropdown;
     beforeEach(() => {
-        dropdown = new DropdownElement('my-custom-element', 'select', dom.window.document);
+        dropdown = new DropdownElement('my-bound-element', 'select', dom.window.document);
         dropdown.render([
             {
                 id: 1,
@@ -63,7 +63,7 @@ describe('CustomElement', () => {
 
     test('creates element when string name is passed in', () => {
         const customElement =
-            new CustomElement('my-custom-element', 'select', dom.window.document);
+            new BoundElement('my-bound-element', 'select', dom.window.document);
 
         expect(customElement.element.tagName).toBe('SELECT');
     });
@@ -71,14 +71,14 @@ describe('CustomElement', () => {
     test('creates element when dom element passed in', () => {
         const selectElement = document.createElement('select');
         const customElement =
-            new CustomElement('my-custom-element', selectElement, dom.window.document);
+            new BoundElement('my-bound-element', selectElement, dom.window.document);
 
         expect(customElement.element.tagName).toBe('SELECT');
     });
 
     test('render binds elements and events', () => {
         const customElement =
-            new CustomElement('my-custom-element', 'select', dom.window.document);
+            new BoundElement('my-bound-element', 'select', dom.window.document);
 
         customElement.bindElements = jest.fn();
         customElement.bindEvents = jest.fn();
@@ -92,7 +92,7 @@ describe('CustomElement', () => {
 
     test('bindElements creates custom element instances', () => {
         const customElement =
-            new CustomElement('my-custom-element', 'div', dom.window.document);
+            new BoundElement('my-bound-element', 'div', dom.window.document);
 
         customElement.setInnerHtml(`<input element-name="text-input" type="text" />`);
         customElement.bindElements();
