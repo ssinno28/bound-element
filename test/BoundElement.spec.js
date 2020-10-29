@@ -94,7 +94,7 @@ describe('Main', () => {
         const customElement =
             new BoundElement('my-bound-element', 'div', dom.window.document);
 
-        customElement.setInnerHtml(`<input element-name="text-input" type="text" />`);
+        customElement.setInnerHtml(`<input bind-as="text-input" type="text" />`);
         customElement.bindElements();
 
         expect(customElement.textInputEl).toBeTruthy();

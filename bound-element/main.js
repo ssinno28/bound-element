@@ -76,9 +76,9 @@ export default class BoundElement {
     }
 
     bindElements() {
-        const childElements = this.element.querySelectorAll('[element-name]');
+        const childElements = this.element.querySelectorAll('[bind-as]');
         _.each(childElements, _.bind(function (childElement) {
-            const elementName = childElement.getAttribute('element-name');
+            const elementName = childElement.getAttribute('bind-as');
 
             const existingCustomEl = this[_.camelCase(elementName + 'El')];
             if (!_.isUndefined(existingCustomEl)) {
@@ -188,7 +188,7 @@ export default class BoundElement {
 
     unbindElementsRecursive(children) {
         _.each(children, _.bind(function (childElement) {
-            const name = childElement.element.getAttribute('element-name');
+            const name = childElement.element.getAttribute('bind-as');
 
             delete this[_.camelCase(name + 'El')];
             childElement.destroy();
