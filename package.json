@@ -1,5 +1,5 @@
 {
-  "name": "light-web-compontents",
+  "name": "light-web-components",
   "version": "1.0.0",
   "description": "Lightweight abstraction from raw web components",
   "main": "bundle.js",

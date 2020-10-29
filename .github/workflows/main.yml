@@ -31,7 +31,7 @@ jobs:
     - name: Bundle
       run: rollup ./base-web-component/main.js --file bundle.js --format iife
 
-#    - name: Publish
-#      run: npm publish --access public
-#      env:
-#        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
+    - name: Publish
+      run: npm publish --access public
+      env:
+        NODE_AUTH_TOKEN: ${{secrets.NPM_TOKEN}}
