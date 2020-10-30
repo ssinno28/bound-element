@@ -3,6 +3,7 @@ import {JSDOM} from "jsdom"
 import BoundElement from "../bound-element/main";
 import UlElement from "./bound-elements/ulelement";
 import MutlipleChild from "./bound-elements/multipleChild";
+import multipleChild from "./bound-elements/multipleChild";
 
 const dom = new JSDOM()
 
@@ -129,11 +130,39 @@ describe('Main', () => {
         expect(Array.isArray(ulElement.liElementEl)).toBeTruthy();
     });
 
-    test('adding multiple children with different bind-as creates array', () => {
+    test('adding multiple children with different bind-as creates object', () => {
         const mutlipleChild = new MutlipleChild('mutliple-child', 'div', dom.window.document);
         mutlipleChild.render();
 
         expect(!Array.isArray(mutlipleChild.firstDivEl)).toBeTruthy();
         expect(!Array.isArray(mutlipleChild.secondDivEl)).toBeTruthy();
     });
+
+    test('calling render again unbinds child elements', () => {
+        const multipleChild = new MutlipleChild('mutliple-child', 'div', dom.window.document);
+        multipleChild.unbindElements = jest.fn();
+
+        multipleChild.render();
+
+        expect(multipleChild.unbindElements).toHaveBeenCalled();
+    });
+
+    test('binds all child elements correctly', () => {
+        const boundElement =
+            new BoundElement('bound-element', 'div', dom.window.document);
+
+        boundElement.template(() => `
+        <div bind-as="first-test">
+            <div bind-as="third-test"></div>
+        </div>
+        <div>
+        <div bind-as="second-test"></div>
+        </div>
+        `);
+
+        boundElement.render();
+
+        expect(boundElement.secondTestEl).toBeTruthy();
+        expect(boundElement.thirdTestEl).toBeFalsy();
+    })
 });
