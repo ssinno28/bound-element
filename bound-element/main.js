@@ -187,7 +187,7 @@ export default class BoundElement {
 
         _.remove(this.children, childElement);
 
-        childElement.destroy();
+        childElement.unbindEvents();
         childElement.element.remove();
         return this;
     }
@@ -209,7 +209,7 @@ export default class BoundElement {
             const name = childElement.element.getAttribute('bind-as');
 
             delete this[_.camelCase(name + 'El')];
-            childElement.destroy();
+            childElement.unbindEvents();
 
             if (!_.isEmpty(childElement.children)) {
                 this.unbindElementsRecursive(childElement.children);
