@@ -55,5 +55,11 @@ export const eventsMixin = {
                 this.bindEventsRecursive(child.children);
             }
         }, this));
+    },
+
+    unbindEvents() {
+        _.each(this._eventRemovals, function (eventRemoval) {
+            eventRemoval();
+        });
     }
 };

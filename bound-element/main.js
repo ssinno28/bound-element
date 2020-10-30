@@ -217,7 +217,7 @@ export default class BoundElement {
         }, this));
 
         this.children = [];
-        this.destroy();
+        this.unbindEvents();
         return this;
     }
 
@@ -281,14 +281,8 @@ export default class BoundElement {
         return elements;
     }
 
-    destroy() {
-        _.each(this._eventRemovals, function (eventRemoval) {
-            eventRemoval();
-        });
-    }
-
     remove() {
-        this.destroy();
+        this.unbindEvents();
         this.unbindElements();
         this.element.remove();
     }
