@@ -1,6 +1,8 @@
 import DropdownElement from "./bound-elements/dropdown";
 import {JSDOM} from "jsdom"
 import BoundElement from "../bound-element/main";
+import UlElement from "./bound-elements/ulelement";
+import MutlipleChild from "./bound-elements/multipleChild";
 
 const dom = new JSDOM()
 
@@ -98,5 +100,40 @@ describe('Main', () => {
         customElement.bindElements();
 
         expect(customElement.textInputEl).toBeTruthy();
+    });
+
+    test('remove unbinds and destroys all children', () => {
+        const ulElement = new UlElement('ul-element', 'ul', dom.window.document);
+        ulElement.render(['test', 'test2']);
+
+        const evt = document.createEvent("HTMLEvents");
+        evt.initEvent("click", false, true);
+
+        const firstLi = ulElement.liElementEl[0];
+        firstLi.onClick = jest.fn();
+
+        ulElement.remove();
+        firstLi.element.dispatchEvent(evt);
+
+        const boundElements = dom.window.document.querySelectorAll('[bind-as]');
+        const queriedUlElement = dom.window.document.querySelectorAll('ul');
+        expect(firstLi.onClick).toHaveBeenCalledTimes(0);
+        expect(boundElements.length).toBe(0);
+        expect(queriedUlElement.length).toBe(0);
+    });
+
+    test('adding multiple children with same bind-as creates array', () => {
+        const ulElement = new UlElement('ul-element', 'ul', dom.window.document);
+        ulElement.render(['test', 'test2']);
+
+        expect(Array.isArray(ulElement.liElementEl)).toBeTruthy();
+    });
+
+    test('adding multiple children with different bind-as creates array', () => {
+        const mutlipleChild = new MutlipleChild('mutliple-child', 'div', dom.window.document);
+        mutlipleChild.render();
+
+        expect(!Array.isArray(mutlipleChild.firstDivEl)).toBeTruthy();
+        expect(!Array.isArray(mutlipleChild.secondDivEl)).toBeTruthy();
     });
 });

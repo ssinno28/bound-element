@@ -80,26 +80,40 @@ export default class BoundElement {
         _.each(childElements, _.bind(function (childElement) {
             const elementName = childElement.getAttribute('bind-as');
 
-            const existingCustomEl = this[_.camelCase(elementName + 'El')];
+            let existingCustomEl = this[_.camelCase(elementName + 'El')];
             if (!_.isUndefined(existingCustomEl)) {
                 console.log(`element with name ${elementName} is already defined`);
-                existingCustomEl.element = childElement;
+
+                const boundElement = this.getBoundElementObject(elementName, childElement);
+                if (Array.isArray(existingCustomEl)) {
+                    existingCustomEl.push(boundElement);
+                } else {
+                    const elementArray = [existingCustomEl];
+                    elementArray.push(boundElement);
+                    this[_.camelCase(elementName + 'El')] = elementArray;
+                }
             } else {
-                const customElementType =
-                    _.find(this.childElementTypes, function (childElementType) {
-                        return childElementType.name === _.upperFirst(_.camelCase(elementName));
-                    });
+                const boundElement = this.getBoundElementObject(elementName, childElement);
 
-                const customElement = !_.isUndefined(customElementType)
-                    ? new customElementType(elementName, childElement, this)
-                    : new BoundElement(elementName, childElement, this);
-
-                this[_.camelCase(elementName) + 'El'] = customElement;
-                this.children.push(customElement);
+                this[_.camelCase(elementName) + 'El'] = boundElement;
+                this.children.push(boundElement);
             }
         }, this));
 
         return this;
+    }
+
+    getBoundElementObject(elementName, childElement) {
+        const customElementType =
+            _.find(this.childElementTypes, function (childElementType) {
+                return childElementType.name === _.upperFirst(_.camelCase(elementName));
+            });
+
+        const boundElement = !_.isUndefined(customElementType)
+            ? new customElementType(elementName, childElement, this)
+            : new BoundElement(elementName, childElement, this);
+
+        return boundElement;
     }
 
     setInnerHtml(html) {
@@ -107,12 +121,12 @@ export default class BoundElement {
         return this;
     }
 
-    setValue(value){
+    setValue(value) {
         this.element.value = value;
         return this;
     }
 
-    setName(name){
+    setName(name) {
         this.element.name = name;
         return this;
     }
@@ -174,7 +188,7 @@ export default class BoundElement {
         return this;
     }
 
-    addChild(childElement){
+    addChild(childElement) {
         const name = childElement.name;
         this[_.camelCase(name + 'El')] = childElement;
 
@@ -182,7 +196,7 @@ export default class BoundElement {
         this.children.push(childElement);
     }
 
-    unbindElements() {
+    unbindElement() {
         return this.unbindElementsRecursive(this.children);
     }
 
@@ -267,6 +281,12 @@ export default class BoundElement {
         _.each(this._eventRemovals, function (eventRemoval) {
             eventRemoval();
         });
+    }
+
+    remove() {
+        this.destroy();
+        this.unbindElement();
+        this.element.remove();
     }
 
     getUniqueSelector() {
