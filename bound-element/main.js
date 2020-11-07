@@ -58,6 +58,7 @@ export default class BoundElement {
         }
 
         this._id = this.getUniqueSelector();
+        this.bindElements();
 
         this._getBoundElementObject = function(elementName, childElement) {
             const customElementType =
