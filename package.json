@@ -1,6 +1,6 @@
 {
   "name": "bound-element",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A library to bind elements to objects in memory",
   "main": "bundle.js",
   "scripts": {

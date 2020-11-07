@@ -10,7 +10,7 @@ const dom = new JSDOM()
 describe('Main', () => {
     let dropdown;
     beforeEach(() => {
-        dropdown = new DropdownElement('my-bound-element', 'select', dom.window.document);
+        dropdown = new DropdownElement('my-bound-element', 'select', null);
         dropdown.render([
             {
                 id: 1,
@@ -66,7 +66,7 @@ describe('Main', () => {
 
     test('creates element when string name is passed in', () => {
         const customElement =
-            new BoundElement('my-bound-element', 'select', dom.window.document);
+            new BoundElement('my-bound-element', 'select', null);
 
         expect(customElement.element.tagName).toBe('SELECT');
     });
@@ -74,14 +74,14 @@ describe('Main', () => {
     test('creates element when dom element passed in', () => {
         const selectElement = document.createElement('select');
         const customElement =
-            new BoundElement('my-bound-element', selectElement, dom.window.document);
+            new BoundElement('my-bound-element', selectElement, null);
 
         expect(customElement.element.tagName).toBe('SELECT');
     });
 
     test('render binds elements and events', () => {
         const customElement =
-            new BoundElement('my-bound-element', 'select', dom.window.document);
+            new BoundElement('my-bound-element', 'select', null);
 
         customElement.bindElements = jest.fn();
         customElement.bindEvents = jest.fn();
@@ -95,7 +95,7 @@ describe('Main', () => {
 
     test('bindElements creates custom element instances', () => {
         const customElement =
-            new BoundElement('my-bound-element', 'div', dom.window.document);
+            new BoundElement('my-bound-element', 'div', null);
 
         customElement.setInnerHtml(`<input bind-as="text-input" type="text" />`);
         customElement.bindElements();
@@ -104,7 +104,7 @@ describe('Main', () => {
     });
 
     test('remove unbinds and destroys all children', () => {
-        const ulElement = new UlElement('ul-element', 'ul', dom.window.document);
+        const ulElement = new UlElement('ul-element', 'ul', null);
         ulElement.render(['test', 'test2']);
 
         const evt = document.createEvent("HTMLEvents");
@@ -124,14 +124,14 @@ describe('Main', () => {
     });
 
     test('adding multiple children with same bind-as creates array', () => {
-        const ulElement = new UlElement('ul-element', 'ul', dom.window.document);
+        const ulElement = new UlElement('ul-element', 'ul', null);
         ulElement.render(['test', 'test2']);
 
         expect(Array.isArray(ulElement.liElementEl)).toBeTruthy();
     });
 
     test('adding multiple children with different bind-as creates object', () => {
-        const mutlipleChild = new MutlipleChild('mutliple-child', 'div', dom.window.document);
+        const mutlipleChild = new MutlipleChild('mutliple-child', 'div', null);
         mutlipleChild.render();
 
         expect(!Array.isArray(mutlipleChild.firstDivEl)).toBeTruthy();
@@ -139,7 +139,7 @@ describe('Main', () => {
     });
 
     test('calling render again unbinds child elements', () => {
-        const multipleChild = new MutlipleChild('mutliple-child', 'div', dom.window.document);
+        const multipleChild = new MutlipleChild('mutliple-child', 'div', null);
         multipleChild.unbindElements = jest.fn();
 
         multipleChild.render();
@@ -149,7 +149,7 @@ describe('Main', () => {
 
     test('binds all child elements correctly', () => {
         const boundElement =
-            new BoundElement('bound-element', 'div', dom.window.document);
+            new BoundElement('bound-element', 'div', null);
 
         boundElement.template(() => `
         <div bind-as="first-test">
@@ -164,5 +164,13 @@ describe('Main', () => {
 
         expect(boundElement.secondTestEl).toBeTruthy();
         expect(boundElement.thirdTestEl).toBeFalsy();
+    })
+
+    test('recursively finds child element type', () => {
+        const multipleChild =
+            new MutlipleChild('mutliple-child', 'div', null);
+        multipleChild.render();
+
+        expect(multipleChild.firstDivEl.dropdownEl.constructor.name).toBe('Dropdown');
     })
 });

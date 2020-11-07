@@ -58,11 +58,25 @@ export default class BoundElement {
         }
 
         this._id = this.getUniqueSelector();
+
+        this._getChildElementType = function(typeName, boundElement){
+            if(_.isNull(boundElement)) return undefined;
+
+            const customElementType =
+                _.find(boundElement.childElementTypes, function (childElementType) {
+                    return childElementType.name === typeName;
+                });
+
+            if(!_.isUndefined(customElementType)){
+                return customElementType;
+            }
+
+            return this._getChildElementType(typeName, boundElement.parent);
+        }
+
         this._getBoundElementObject = function(elementName, childElement) {
             const customElementType =
-                _.find(this.childElementTypes, function (childElementType) {
-                    return childElementType.name === _.upperFirst(_.camelCase(elementName));
-                });
+                this._getChildElementType(_.upperFirst(_.camelCase(elementName)), this);
 
             const boundElement = !_.isUndefined(customElementType)
                 ? new customElementType(elementName, childElement, this)
