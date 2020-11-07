@@ -241,7 +241,7 @@ export default class BoundElement {
             throw new Error(`element with name ${name} is already defined`);
         }
 
-        const childElement = new BoundElement(name, type, this);
+        const childElement = this._getBoundElementObject(name, type);
 
         if (prepend) {
             this.element.prepend(childElement.element);
