@@ -58,8 +58,6 @@ export default class BoundElement {
         }
 
         this._id = this.getUniqueSelector();
-        this.bindElements();
-
         this._getBoundElementObject = function(elementName, childElement) {
             const customElementType =
                 _.find(this.childElementTypes, function (childElementType) {
@@ -72,6 +70,8 @@ export default class BoundElement {
 
             return boundElement;
         }
+
+        this.bindElements();
     }
 
     generateId() {
