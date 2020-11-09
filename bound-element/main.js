@@ -53,6 +53,7 @@ export default class BoundElement {
 
         if (typeof elementType === 'string') {
             this._element = document.createElement(elementType);
+            this._element.setAttribute('bind-as', name);
         } else {
             this._element = elementType;
         }
