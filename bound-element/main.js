@@ -215,14 +215,6 @@ export default class BoundElement {
         return this;
     }
 
-    addChild(childElement) {
-        const name = childElement.name;
-        this[_.camelCase(name + 'El')] = childElement;
-
-        this.element.appendChild(childElement.element);
-        this.children.push(childElement);
-    }
-
     unbindElements() {
         return this.unbindElementsRecursive(this.children);
     }
@@ -252,9 +244,6 @@ export default class BoundElement {
         } else {
             this.element.append(childElement.element);
         }
-
-        this.children.push(childElement);
-        this[_.camelCase(childElement.name + 'El')] = childElement;
 
         func(childElement);
         return this;
