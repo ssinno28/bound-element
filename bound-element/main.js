@@ -221,7 +221,8 @@ export default class BoundElement {
             }
         }, this);
 
-        _.map(children, _.bind(function (childElement) {
+        _.each(Object.keys(children), _.bind(function (key) {
+            const childElement = children[key];
             if (Array.isArray(childElement)) {
                 _.each(childElement, function (child) {
                     unbindElement(child);
@@ -251,7 +252,8 @@ export default class BoundElement {
 
     getElementRecursive(name, children) {
         let element = null;
-        _.map(children, _.bind(function (customElement, key) {
+        _.each(Object.keys(children), _.bind(function (key) {
+            const customElement = children[key];
             if (key === name) {
                 element = customElement;
                 return false;
