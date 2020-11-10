@@ -44,7 +44,7 @@ export default class BoundElement {
 
     constructor(name, elementType, parent) {
         this._parent = parent;
-        this._children = [];
+        this._children = {};
         this._childElementTypes = [];
         this._eventRemovals = [];
         this._eventAdditions = [];
@@ -60,22 +60,22 @@ export default class BoundElement {
 
         this._id = this.getUniqueSelector();
 
-        this._getChildElementType = function(typeName, boundElement){
-            if(_.isNull(boundElement)) return undefined;
+        this._getChildElementType = function (typeName, boundElement) {
+            if (_.isNull(boundElement)) return undefined;
 
             const customElementType =
                 _.find(boundElement.childElementTypes, function (childElementType) {
                     return childElementType.name === typeName;
                 });
 
-            if(!_.isUndefined(customElementType)){
+            if (!_.isUndefined(customElementType)) {
                 return customElementType;
             }
 
             return this._getChildElementType(typeName, boundElement.parent);
         }
 
-        this._getBoundElementObject = function(elementName, childElement) {
+        this._getBoundElementObject = function (elementName, childElement) {
             const customElementType =
                 this._getChildElementType(_.upperFirst(_.camelCase(elementName)), this);
 
@@ -86,7 +86,7 @@ export default class BoundElement {
             return boundElement;
         }
 
-        this._addBoundElement = function(elementName, childElement){
+        this._addBoundElement = function (elementName, childElement) {
             let existingCustomEl = this[_.camelCase(elementName + 'El')];
             if (!_.isUndefined(existingCustomEl)) {
                 console.log(`element with name ${elementName} is already defined`);
@@ -100,13 +100,14 @@ export default class BoundElement {
                     this[_.camelCase(elementName + 'El')] = elementArray;
                 }
 
+                this.children[elementName] = boundElement;
                 return boundElement;
             } else {
                 const boundElement = this._getBoundElementObject(elementName, childElement);
 
                 this[_.camelCase(elementName) + 'El'] = boundElement;
-                this.children.push(boundElement);
 
+                this.children[elementName] = boundElement;
                 return boundElement;
             }
         }
@@ -141,7 +142,7 @@ export default class BoundElement {
         const childElements = this.element.querySelectorAll('[bind-as]');
         _.each(childElements, _.bind(function (childElement) {
             const parentEl = getClosest(childElement, '[bind-as]');
-            if(parentEl !== null){
+            if (parentEl !== null) {
                 const parentElBindAs = parentEl.getAttribute('bind-as');
                 if (parentElBindAs !== this.name) {
                     return;
@@ -204,23 +205,12 @@ export default class BoundElement {
         return this;
     }
 
-    removeChild(childElement) {
-        const name = childElement.name;
-        delete this[_.camelCase(name + 'El')];
-
-        _.remove(this.children, childElement);
-
-        childElement.unbindEvents();
-        childElement.element.remove();
-        return this;
-    }
-
     unbindElements() {
         return this.unbindElementsRecursive(this.children);
     }
 
     unbindElementsRecursive(children) {
-        _.each(children, _.bind(function (childElement) {
+        _.map(children, _.bind(function (childElement) {
             const name = childElement.element.getAttribute('bind-as');
 
             delete this[_.camelCase(name + 'El')];
@@ -231,22 +221,18 @@ export default class BoundElement {
             }
         }, this));
 
-        this.children = [];
+        this.children = {};
         this.unbindEvents();
         return this;
     }
 
-    createChildElement(name, type, prepend, func) {
-        const childElement = this._addBoundElement(name, type);
-
-        if (prepend) {
-            this.element.prepend(childElement.element);
-        } else {
-            this.element.append(childElement.element);
+    getParentElement(name) {
+        let parent = this.parent;
+        for (; !_.iNil(parent); parent = parent.parent) {
+            if (parent.name === name) return parent;
         }
 
-        func(childElement);
-        return this;
+        return null;
     }
 
     getElement(name) {
@@ -255,8 +241,8 @@ export default class BoundElement {
 
     getElementRecursive(name, children) {
         let element = null;
-        _.each(children, _.bind(function (customElement) {
-            if (customElement.name === name) {
+        _.map(children, _.bind(function (customElement, key) {
+            if (key === name) {
                 element = customElement;
                 return false;
             }
@@ -269,24 +255,6 @@ export default class BoundElement {
         }, this));
 
         return element;
-    }
-
-    getElements(name) {
-        return this.getElementsRecursive(name, [], this.children);
-    }
-
-    getElementsRecursive(name, elements, children) {
-        _.each(children, _.bind(function (customElement) {
-            if (customElement.name === name) {
-                elements.push(customElement);
-            }
-
-            if (!_.isEmpty(customElement.children)) {
-                this.getElementsRecursive(name, elements, customElement.children);
-            }
-        }, this));
-
-        return elements;
     }
 
     remove() {
