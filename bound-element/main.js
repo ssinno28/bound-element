@@ -86,6 +86,31 @@ export default class BoundElement {
             return boundElement;
         }
 
+        this._addBoundElement = function(elementName, childElement){
+            let existingCustomEl = this[_.camelCase(elementName + 'El')];
+            if (!_.isUndefined(existingCustomEl)) {
+                console.log(`element with name ${elementName} is already defined`);
+
+                const boundElement = this._getBoundElementObject(elementName, childElement);
+                if (Array.isArray(existingCustomEl)) {
+                    existingCustomEl.push(boundElement);
+                } else {
+                    const elementArray = [existingCustomEl];
+                    elementArray.push(boundElement);
+                    this[_.camelCase(elementName + 'El')] = elementArray;
+                }
+
+                return boundElement;
+            } else {
+                const boundElement = this._getBoundElementObject(elementName, childElement);
+
+                this[_.camelCase(elementName) + 'El'] = boundElement;
+                this.children.push(boundElement);
+
+                return boundElement;
+            }
+        }
+
         this.bindElements();
     }
 
@@ -124,25 +149,7 @@ export default class BoundElement {
             }
 
             const elementName = childElement.getAttribute('bind-as');
-
-            let existingCustomEl = this[_.camelCase(elementName + 'El')];
-            if (!_.isUndefined(existingCustomEl)) {
-                console.log(`element with name ${elementName} is already defined`);
-
-                const boundElement = this._getBoundElementObject(elementName, childElement);
-                if (Array.isArray(existingCustomEl)) {
-                    existingCustomEl.push(boundElement);
-                } else {
-                    const elementArray = [existingCustomEl];
-                    elementArray.push(boundElement);
-                    this[_.camelCase(elementName + 'El')] = elementArray;
-                }
-            } else {
-                const boundElement = this._getBoundElementObject(elementName, childElement);
-
-                this[_.camelCase(elementName) + 'El'] = boundElement;
-                this.children.push(boundElement);
-            }
+            this._addBoundElement(elementName, childElement);
         }, this));
 
         return this;
@@ -238,11 +245,7 @@ export default class BoundElement {
     }
 
     createChildElement(name, type, prepend, func) {
-        if (!_.isUndefined(this[_.camelCase(name + 'El')])) {
-            throw new Error(`element with name ${name} is already defined`);
-        }
-
-        const childElement = this._getBoundElementObject(name, type);
+        const childElement = this._addBoundElement(name, type);
 
         if (prepend) {
             this.element.prepend(childElement.element);
