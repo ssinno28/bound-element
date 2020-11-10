@@ -98,9 +98,9 @@ export default class BoundElement {
                     const elementArray = [existingCustomEl];
                     elementArray.push(boundElement);
                     this[_.camelCase(elementName + 'El')] = elementArray;
+                    this.children[elementName] = elementArray;
                 }
 
-                this.children[elementName] = boundElement;
                 return boundElement;
             } else {
                 const boundElement = this._getBoundElementObject(elementName, childElement);
