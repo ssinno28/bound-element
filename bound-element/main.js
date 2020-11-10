@@ -210,7 +210,7 @@ export default class BoundElement {
     }
 
     unbindElementsRecursive(children) {
-        _.map(children, _.bind(function (childElement) {
+        const unbindElement = _.bind(function (childElement) {
             const name = childElement.element.getAttribute('bind-as');
 
             delete this[_.camelCase(name + 'El')];
@@ -218,6 +218,16 @@ export default class BoundElement {
 
             if (!_.isEmpty(childElement.children)) {
                 this.unbindElementsRecursive(childElement.children);
+            }
+        }, this);
+
+        _.map(children, _.bind(function (childElement) {
+            if (Array.isArray(childElement)) {
+                _.each(childElement, function (child) {
+                    unbindElement(child);
+                })
+            } else {
+                unbindElement(childElement);
             }
         }, this));
 
