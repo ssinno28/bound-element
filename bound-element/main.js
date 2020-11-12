@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import {eventsMixin} from "./mixins/events";
+import isNil from "lodash/isNil";
 
 const getClosest = function (elem, selector) {
     elem = elem.parentNode;
@@ -135,6 +136,10 @@ export default class BoundElement {
         // adding events after render
         this.bindEvents();
 
+        if (_.isFunction(this.onRender)) {
+            this.onRender();
+        }
+
         return this;
     }
 
@@ -239,7 +244,7 @@ export default class BoundElement {
 
     getParentElement(name) {
         let parent = this.parent;
-        for (; !_.iNil(parent); parent = parent.parent) {
+        for (; !isNil(parent); parent = parent.parent) {
             if (parent.name === name) return parent;
         }
 

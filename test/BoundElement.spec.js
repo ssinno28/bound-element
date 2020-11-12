@@ -164,7 +164,30 @@ describe('Main', () => {
 
         expect(boundElement.secondTestEl).toBeTruthy();
         expect(boundElement.thirdTestEl).toBeFalsy();
-    })
+    });
+
+    test('recursively finds parent', () => {
+        const boundElement =
+            new BoundElement('bound-element', 'div', null);
+
+        boundElement.template(() => `
+        <div bind-as="first-test">
+            <div bind-as="third-test">
+            <div bind-as="forth-test"></div>
+</div>
+        </div>
+        <div>
+        <div bind-as="second-test"></div>
+        </div>
+        `);
+
+        boundElement.render();
+
+        const forthTestEl = boundElement.getElement('forth-test');
+        const parentEl = forthTestEl.getParentElement('first-test');
+
+        expect(parentEl.name).toBe('first-test');
+    });
 
     test('recursively finds child element type', () => {
         const multipleChild =
@@ -172,5 +195,19 @@ describe('Main', () => {
         multipleChild.render();
 
         expect(multipleChild.firstDivEl.dropdownEl.constructor.name).toBe('Dropdown');
-    })
+    });
+
+    test('calls onRender when method specified', () => {
+        const boundElement =
+            new BoundElement('bound-element', 'div', null);
+
+        boundElement.template(() => `
+        <div bind-as="first-test"></div>
+        `);
+
+        boundElement.onRender = jest.fn();
+        boundElement.render();
+
+        expect(boundElement.onRender).toHaveBeenCalled();
+    });
 });
