@@ -1,4 +1,6 @@
-import {bind, each, isEmpty} from "lodash";
+import {isEmpty} from "lodash";
+import bind from 'lodash/bind';
+import each from 'lodash/each';
 
 export const eventsMixin = {
     onClick(func, propagate) {

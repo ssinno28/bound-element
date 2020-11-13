@@ -1,5 +1,7 @@
 import {eventsMixin} from "./mixins/events";
-import {bind, camelCase, each, extend, find, isEmpty, isFunction, isNil, isNull, isUndefined, upperFirst} from "lodash";
+import {camelCase, extend, find, isEmpty, isFunction, isNil, isNull, isUndefined, upperFirst} from "lodash";
+import bind from 'lodash/bind';
+import each from 'lodash/each';
 
 const getClosest = function (elem, selector) {
     elem = elem.parentNode;
