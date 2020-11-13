@@ -1,4 +1,4 @@
-import {isEmpty} from "lodash";
+import isEmpty from "lodash/isEmpty";
 import bind from 'lodash/bind';
 import each from 'lodash/each';
 
