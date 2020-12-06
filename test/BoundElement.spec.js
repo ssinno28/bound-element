@@ -235,9 +235,9 @@ describe('Main', () => {
         <div bind-as="first-test"></div>
         `);
 
-        boundElement.onChildCreate = jest.fn();
+        boundElement.onFirstTestCreate = jest.fn();
         boundElement.render();
 
-        expect(boundElement.onChildCreate).toHaveBeenCalled();
+        expect(boundElement.onFirstTestCreate).toHaveBeenCalled();
     });
 });

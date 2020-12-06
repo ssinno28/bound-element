@@ -95,8 +95,9 @@ export default class BoundElement {
 
             boundElement.index = index;
 
-            if (isFunction(this.onChildCreate)) {
-                this.onChildCreate(boundElement, index);
+            const onCreateMethodName = camelCase(`on-${elementName}-create`);
+            if (isFunction(this[onCreateMethodName])) {
+                this[onCreateMethodName](boundElement, index);
             }
 
             return boundElement;
