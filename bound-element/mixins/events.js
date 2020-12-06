@@ -27,6 +27,18 @@ export const eventsMixin = {
         return this;
     },
 
+    onFocus(func, propagate) {
+        this.element.addEventListener('focus', func, propagate);
+        this.aggregateEvent('focus', func, propagate);
+        return this;
+    },
+
+    onEvent(event, func, propagate) {
+        this.element.addEventListener(event, func, propagate);
+        this.aggregateEvent(event, func, propagate);
+        return this;
+    },
+
     onMouseOut(func, propagate) {
         this.element.addEventListener('mouseout', func, propagate);
         this.aggregateEvent('mouseout', func, propagate);

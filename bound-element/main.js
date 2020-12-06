@@ -85,13 +85,19 @@ export default class BoundElement {
             return this._getChildElementType(typeName, boundElement.parent);
         }
 
-        this._getBoundElementObject = function (elementName, childElement) {
+        this._getBoundElementObject = function (elementName, childElement, index) {
             const customElementType =
                 this._getChildElementType(upperFirst(camelCase(elementName)), this);
 
             const boundElement = !isUndefined(customElementType)
                 ? new customElementType(elementName, childElement, this)
                 : new BoundElement(elementName, childElement, this);
+
+            boundElement.index = index;
+
+            if (isFunction(this.onChildCreate)) {
+                this.onChildCreate(boundElement, index);
+            }
 
             return boundElement;
         }
@@ -101,10 +107,12 @@ export default class BoundElement {
             if (!isUndefined(existingCustomEl)) {
                 console.log(`element with name ${elementName} is already defined`);
 
-                const boundElement = this._getBoundElementObject(elementName, childElement);
+                let boundElement;
                 if (Array.isArray(existingCustomEl)) {
+                    boundElement = this._getBoundElementObject(elementName, childElement, existingCustomEl.length);
                     existingCustomEl.push(boundElement);
                 } else {
+                    boundElement = this._getBoundElementObject(elementName, childElement, 1)
                     const elementArray = [existingCustomEl];
                     elementArray.push(boundElement);
                     this[camelCase(elementName + 'El')] = elementArray;
@@ -113,7 +121,7 @@ export default class BoundElement {
 
                 return boundElement;
             } else {
-                const boundElement = this._getBoundElementObject(elementName, childElement);
+                const boundElement = this._getBoundElementObject(elementName, childElement, 0);
 
                 this[camelCase(elementName) + 'El'] = boundElement;
 

@@ -8,7 +8,7 @@ export default class Dropdown extends BoundElement {
         this.template((options) => {
             return `<option selector-template-id="0">New</option>
             ${_.map(options, function (selectorTpl) {
-                return `<option value="${selectorTpl.id}">${selectorTpl.name}</option>`;
+                return `<option bind-as="option" value="${selectorTpl.id}">${selectorTpl.name}</option>`;
             }).join("")}`
         });
 

@@ -15,13 +15,29 @@ describe('Main', () => {
             {
                 id: 1,
                 name: "test"
+            },
+            {
+                id: 2,
+                name: "test 2"
+            },
+            {
+                id: 3,
+                name: "test 3"
             }
         ]);
     });
 
     test('renders template', () => {
         const options = dropdown.element.querySelectorAll('option');
-        expect(options.length).toBe(2);
+        expect(options.length).toBe(4);
+    });
+
+    test('sets indexes for options', () => {
+        let index = 0;
+       dropdown.optionEl.forEach((optionEl) => {
+          expect(optionEl.index).toBeGreaterThanOrEqual(index);
+          index++;
+       });
     });
 
     test('calls on change', () => {
@@ -209,5 +225,19 @@ describe('Main', () => {
         boundElement.render();
 
         expect(boundElement.onRender).toHaveBeenCalled();
+    });
+
+    test('calls onChildCreate when method specified', () => {
+        const boundElement =
+            new BoundElement('bound-element', 'div', null);
+
+        boundElement.template(() => `
+        <div bind-as="first-test"></div>
+        `);
+
+        boundElement.onChildCreate = jest.fn();
+        boundElement.render();
+
+        expect(boundElement.onChildCreate).toHaveBeenCalled();
     });
 });
