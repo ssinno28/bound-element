@@ -113,7 +113,7 @@ describe('Main', () => {
         const customElement =
             new BoundElement('my-bound-element', 'div', null);
 
-        customElement.setInnerHtml(`<input bind-as="text-input" type="text" />`);
+        customElement.element.innerHTML = `<input bind-as="text-input" type="text" />`;
         customElement.bindElements();
 
         expect(customElement.textInputEl).toBeTruthy();

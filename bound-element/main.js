@@ -179,47 +179,8 @@ export default class BoundElement {
         return this;
     }
 
-    setInnerHtml(html) {
-        this.element.innerHTML = html;
-        return this;
-    }
-
-    setValue(value) {
-        this.element.value = value;
-        return this;
-    }
-
-    setName(name) {
-        this.element.name = name;
-        return this;
-    }
-
-    setInnerText(text) {
-        this.element.innerText = text;
-        return this;
-    }
-
     template(func) {
         this._template = func;
-        return this;
-    }
-
-    toggleClass(cssClass) {
-        this.element.classList.toggle(cssClass);
-        return this;
-    }
-
-    hasClass(cssClass) {
-        return this.element.classList.contains(cssClass);
-    }
-
-    addClass(cssClass) {
-        this.element.classList.add(cssClass);
-        return this;
-    }
-
-    removeClass(cssClass) {
-        this.element.classList.remove(cssClass);
         return this;
     }
 
