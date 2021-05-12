@@ -10,6 +10,7 @@ import isNil from 'lodash/isNil';
 import isNull from 'lodash/isNull';
 import isUndefined from 'lodash/isUndefined';
 import upperFirst from 'lodash/upperFirst';
+import {DiffDOM, stringToObj} from "diff-dom";
 
 const getClosest = function (elem, selector) {
     elem = elem.parentNode;
@@ -148,7 +149,12 @@ export default class BoundElement {
         }
 
         this.unbindElements();
-        this.element.innerHTML = this._template(...arguments);
+
+        const dd = new DiffDOM();
+        const updatedElement = stringToObj(`<${this.element.nodeName}> ${this._template(...arguments)} <${this.element.nodeName}>`)
+        const diff = dd.diff(this.element, updatedElement);
+        dd.apply(this.element, diff);
+
         this.bindElements();
 
         // adding events after render

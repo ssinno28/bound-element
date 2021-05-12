@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/ssinno28/bound-element#readme",
   "dependencies": {
+    "diff-dom": "^4.2.2",
     "lodash": "^4.17.20"
   },
   "devDependencies": {
