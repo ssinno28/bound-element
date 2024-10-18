@@ -20,13 +20,16 @@ jobs:
         registry-url: https://registry.npmjs.org/
           
     - name: Restore
-      run: npm install
-      
-    - name: Run Jest
-      run: npm run test
+      run: npm ci
 
     - name: Install rollup
       run: npm install -g rollup
+
+    - name: Install jest
+      run: npm install -g jest
+
+    - name: Run Jest
+      run: npm run test
       
     - name: Bundle
       run: rollup ./bound-element/main.js --file bundle.js --format cjs
