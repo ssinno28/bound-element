@@ -1,5 +1,4 @@
 import BoundElement from "../../bound-element/main"
-import * as _ from "lodash";
 import Dropdown from "./dropdown";
 
 export default class MutlipleChild extends BoundElement {

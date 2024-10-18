@@ -1,5 +1,4 @@
 import BoundElement from "../../bound-element/main"
-import * as _ from "lodash";
 import LiElement from "./lielement";
 
 export default class UlElement extends BoundElement {
@@ -9,7 +8,7 @@ export default class UlElement extends BoundElement {
 
         this.template((options) => {
             return `
-            ${_.map(options, function (text) {
+            ${options.map(function (text) {
                 return `<li bind-as="li-element">${text}</li>`;
             }).join("")}`
         });

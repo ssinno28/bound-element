@@ -1,15 +1,4 @@
 import {eventsMixin} from "./mixins/events";
-import bind from 'lodash/bind';
-import each from 'lodash/each';
-import isEmpty from 'lodash/isEmpty';
-import find from 'lodash/find';
-import extend from 'lodash/extend';
-import camelCase from 'lodash/camelCase';
-import isFunction from 'lodash/isFunction';
-import isNil from 'lodash/isNil';
-import isNull from 'lodash/isNull';
-import isUndefined from 'lodash/isUndefined';
-import upperFirst from 'lodash/upperFirst';
 
 const getClosest = function (elem, selector) {
     elem = elem.parentNode;
@@ -18,6 +7,17 @@ const getClosest = function (elem, selector) {
     }
     return null;
 };
+
+const camelCase = function(str) {
+    return str
+        .replace(/\-(.)/g, function($1) { return $1.toUpperCase(); })
+        .replace(/\-/g, '')
+        .replace(/^(.)/, function($1) { return $1.toLowerCase(); });
+}
+
+function upperFirst(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+}
 
 export default class BoundElement {
     get children() {
@@ -71,14 +71,13 @@ export default class BoundElement {
         this._id = this.getUniqueSelector();
 
         this._getChildElementType = function (typeName, boundElement) {
-            if (isNull(boundElement)) return undefined;
+            if (boundElement === null) return undefined;
 
-            const customElementType =
-                find(boundElement.childElementTypes, function (childElementType) {
-                    return childElementType.name === typeName;
-                });
+            const customElementType = boundElement.childElementTypes.find(function (childElementType) {
+                return childElementType.name === typeName;
+            });
 
-            if (!isUndefined(customElementType)) {
+            if (customElementType) {
                 return customElementType;
             }
 
@@ -89,14 +88,14 @@ export default class BoundElement {
             const customElementType =
                 this._getChildElementType(upperFirst(camelCase(elementName)), this);
 
-            const boundElement = !isUndefined(customElementType)
+            const boundElement = customElementType
                 ? new customElementType(elementName, childElement, this)
                 : new BoundElement(elementName, childElement, this);
 
             boundElement.index = index;
 
             const onCreateMethodName = camelCase(`on-${elementName}-create`);
-            if (isFunction(this[onCreateMethodName])) {
+            if (typeof this[onCreateMethodName] === 'function') {
                 this[onCreateMethodName](boundElement, index);
             }
 
@@ -105,7 +104,7 @@ export default class BoundElement {
 
         this._addBoundElement = function (elementName, childElement) {
             let existingCustomEl = this[camelCase(elementName + 'El')];
-            if (!isUndefined(existingCustomEl)) {
+            if (existingCustomEl) {
                 console.log(`element with name ${elementName} is already defined`);
 
                 let boundElement;
@@ -142,7 +141,7 @@ export default class BoundElement {
     };
 
     render() {
-        if (isNull(this._template)) {
+        if (this._template === null) {
             console.log(`No template set for element ${this.name}`);
             return;
         }
@@ -154,7 +153,7 @@ export default class BoundElement {
         // adding events after render
         this.bindEvents();
 
-        if (isFunction(this.onRender)) {
+        if (typeof this.onRender === 'function') {
             this.onRender();
         }
 
@@ -163,7 +162,7 @@ export default class BoundElement {
 
     bindElements() {
         const childElements = this.element.querySelectorAll('[bind-as]');
-        each(childElements, bind(function (childElement) {
+        childElements.forEach(function (childElement) {
             const parentEl = getClosest(childElement, '[bind-as]');
             if (parentEl !== null) {
                 const parentElBindAs = parentEl.getAttribute('bind-as');
@@ -174,7 +173,7 @@ export default class BoundElement {
 
             const elementName = childElement.getAttribute('bind-as');
             this._addBoundElement(elementName, childElement);
-        }, this));
+        }.bind(this));
 
         return this;
     }
@@ -194,27 +193,27 @@ export default class BoundElement {
     }
 
     unbindElementsRecursive(children) {
-        const unbindElement = bind(function (childElement) {
+        const unbindElement = function (childElement) {
             const name = childElement.element.getAttribute('bind-as');
 
             delete this[camelCase(name + 'El')];
             childElement.unbindEvents();
 
-            if (!isEmpty(childElement.children)) {
+            if (childElement.children && childElement.children.length > 0) {
                 this.unbindElementsRecursive(childElement.children);
             }
-        }, this);
+        }.bind(this);
 
-        each(Object.keys(children), bind(function (key) {
+        Object.keys(children).forEach(function (key) {
             const childElement = children[key];
             if (Array.isArray(childElement)) {
-                each(childElement, function (child) {
+                childElement.forEach(function (child) {
                     unbindElement(child);
-                })
+                });
             } else {
                 unbindElement(childElement);
             }
-        }, this));
+        }.bind(this));
 
         this.children = {};
         this.unbindEvents();
@@ -223,7 +222,7 @@ export default class BoundElement {
 
     getParentElement(name) {
         let parent = this.parent;
-        for (; !isNil(parent); parent = parent.parent) {
+        for (; parent !== null && parent !== undefined; parent = parent.parent) {
             if (parent.name === name) return parent;
         }
 
@@ -236,19 +235,22 @@ export default class BoundElement {
 
     getElementRecursive(name, children) {
         let element = null;
-        each(Object.keys(children), bind(function (key) {
+        Object.keys(children).forEach(function (key) {
             const customElement = children[key];
             if (key === name) {
                 element = customElement;
-                return false;
+                return;
             }
 
-            if (!isEmpty(customElement.children)) {
-                element = this.getElementRecursive(name, customElement.children);
+            if (customElement.children) {
+                const foundElement = this.getElementRecursive(name, customElement.children);
+                if(foundElement !== null) {
+                    element = foundElement;
+                }
             }
 
-            if (!isNull(element)) return false;
-        }, this));
+            if (element !== null) return;
+        }.bind(this));
 
         return element;
     }
@@ -279,4 +281,4 @@ export default class BoundElement {
     }
 }
 
-extend(BoundElement.prototype, eventsMixin);
+Object.assign(BoundElement.prototype, eventsMixin);

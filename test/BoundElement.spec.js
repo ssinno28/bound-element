@@ -3,7 +3,6 @@ import {JSDOM} from "jsdom"
 import BoundElement from "../bound-element/main";
 import UlElement from "./bound-elements/ulelement";
 import MutlipleChild from "./bound-elements/multipleChild";
-import multipleChild from "./bound-elements/multipleChild";
 
 const dom = new JSDOM()
 

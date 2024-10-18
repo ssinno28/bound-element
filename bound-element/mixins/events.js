@@ -1,7 +1,3 @@
-import isEmpty from "lodash/isEmpty";
-import bind from 'lodash/bind';
-import each from 'lodash/each';
-
 export const eventsMixin = {
     onClick(func, propagate) {
         this.element.addEventListener('click', func, propagate);
@@ -46,13 +42,13 @@ export const eventsMixin = {
     },
 
     aggregateEvent: function (eventType, func, propagate) {
-        this._eventRemovals.push(bind(() => {
+        this._eventRemovals.push(function() {
             this.element.removeEventListener(eventType, func);
-        }, this));
+        }.bind(this));
 
-        this._eventAdditions.push(bind(() => {
+        this._eventAdditions.push(function() {
             this.element.addEventListener(eventType, func, propagate);
-        }));
+        }.bind(this));
     },
 
     bindEvents() {
@@ -60,19 +56,19 @@ export const eventsMixin = {
     },
 
     bindEventsRecursive(children) {
-        each(children, bind(function (child) {
-            each(child._eventAdditions, (eventAddition) => {
+        children.forEach(function (child) {
+            child._eventAdditions.forEach((eventAddition) => {
                 eventAddition();
-            });
+            })
 
-            if (!isEmpty(child.children)) {
+            if (child.children && child.children.length > 0) {
                 this.bindEventsRecursive(child.children);
             }
-        }, this));
+        }.bind(this));
     },
 
     unbindEvents() {
-        each(this._eventRemovals, function (eventRemoval) {
+        this._eventRemovals.forEach(function (eventRemoval) {
             eventRemoval();
         });
     }
