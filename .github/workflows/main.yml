@@ -16,7 +16,7 @@ jobs:
 
     - uses: actions/setup-node@v1
       with:
-        node-version: 12
+        node-version: 18.13.0
         registry-url: https://registry.npmjs.org/
           
     - name: Restore
@@ -24,9 +24,6 @@ jobs:
 
     - name: Install rollup
       run: npm install -g rollup
-
-    - name: Install jest
-      run: npm install -g jest
 
     - name: Run Jest
       run: npm run test
